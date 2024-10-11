@@ -1,1 +1,11 @@
 INSERT INTO member (username, password) VALUES ('Ted', '000000');
+INSERT INTO GAME_RECORD (count, result, time, MEMBER_ID) VALUES (1, 1, '2024-10-11 13:12:08', 1);
+INSERT INTO GAME_RECORD (count, result, time, MEMBER_ID) VALUES (1, 0, '2024-10-11 13:12:08', 1);
+INSERT INTO GAME_RECORD (count, result, time, MEMBER_ID) VALUES (1, 1, '2024-10-11 13:13:08', 1);
+INSERT INTO GAME_RECORD (count, result, time, MEMBER_ID) VALUES (1, 1, '2024-10-11 13:13:08', 1);
+INSERT INTO GAME_RECORD (count, result, time, MEMBER_ID) VALUES (1, 1, '2024-10-11 13:42:08', 1);
+INSERT INTO GAME_RECORD (count, result, time, MEMBER_ID) VALUES (1, 0, '2024-10-11 13:52:08', 1);
+INSERT INTO GAME_RECORD (count, result, time, MEMBER_ID) VALUES (1, 0, '2024-10-11 14:02:08', 1);
+INSERT INTO GAME_RECORD (count, result, time, MEMBER_ID) VALUES (1, 1, '2024-10-11 14:12:08', 1);
+
+

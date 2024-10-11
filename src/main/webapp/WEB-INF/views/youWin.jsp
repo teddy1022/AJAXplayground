@@ -23,9 +23,7 @@
                     %>
                     <%= username %>!
                 </span>
-                <form class="form-inline d-inline" action="logout" method="get">
-                    <button class="btn btn-outline-danger ml-2" type="submit">Logout</button>
-                </form>
+
             </div>
         </div>
     </nav>
@@ -34,6 +32,9 @@
         <h1 class="display-4 text-success">Congratulations! You guessed the correct number!</h1>
         <p class="lead mt-4">Great job!</p>
         <a href="guess" class="btn btn-primary btn-lg mt-3">Play Again</a>
+    </div>
+    <div class="text-center mt-3">
+        <a href="${pageContext.request.contextPath}/guesshistory" class="btn btn-info my-2 my-sm-0">View History</a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

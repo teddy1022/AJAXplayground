@@ -8,7 +8,6 @@
     <meta charset="UTF-8">
     <title>Lottery Number Generator</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -23,9 +22,9 @@
                     %>
                     <%= username %>!
                 </span>
-                <form class="form-inline d-inline" action="logout" method="get">
-                    <button class="btn btn-outline-danger ml-2" type="submit">Logout</button>
-                </form>
+                <!-- 使用 JavaScript 控制登出行为 -->
+                <button class="btn btn-outline-danger ml-2" type="button" onclick="confirmLogout()">Logout</button>
+                <form id="logoutForm" action="logout" method="get" style="display: none;"></form>
             </div>
         </div>
     </nav>
@@ -44,17 +43,17 @@
                 <% } %>
 
                 <form action="<%= request.getContextPath() %>/lottery" method="post">
-                    <div class="form-group">
+                    <div class="form-group mt-5">
                         <label for="excludeNumbers">Exclude Numbers (separate by space):</label>
                         <input type="text" class="form-control" id="excludeNumbers" name="excludeNumbers" placeholder="ex: 3 7 15">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="loopCount">Loop Count:</label>
-                        <input type="text" class="form-control" id="loopCount" name="loopCount" placeholder="Enter a positive integer">
+                        <input type="text" class="form-control" id="loopCount" name="loopCount" placeholder="Enter a positive integer between 1 and 500">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Generate</button>
+                    <button type="submit" class="btn btn-primary btn-block mt-5">Generate</button>
                 </form>
-                <div class="text-center mt-3">
+                <div class="text-center mt-5">
                     <a href="index" class="btn btn-secondary">Back to Home</a>
                 </div>
             </div>
@@ -64,5 +63,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="<%= request.getContextPath() %>/javascripts/logout.js"></script>
 </body>
 </html>

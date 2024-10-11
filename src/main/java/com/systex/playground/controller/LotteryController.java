@@ -1,8 +1,8 @@
 package com.systex.playground.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
+import com.systex.playground.service.LotteryService;
 import jakarta.servlet.http.HttpSession;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,90 +12,72 @@ import java.util.*;
 @Controller
 public class LotteryController {
 
+    @Autowired
+    private LotteryService lotteryService;
+
     @GetMapping("/lottery")
     public String showLotteryPage() {
-        return "lottery"; 
+        return "lottery";
     }
 
     @PostMapping("/lottery")
     public String generateLotteryNumbers(
             @RequestParam(value = "excludeNumbers", required = false) String excludeNumbersStr,
             @RequestParam(value = "loopCount", required = false) String loopCountStr,
-            HttpServletRequest request,
+            HttpSession session,
             Model model) {
 
         List<Integer> excludeNumbers = new ArrayList<>();
-        int loopCount = 1;
-
-        boolean hasError = false;
         StringBuilder errorMessage = new StringBuilder();
 
-        try {
-            loopCount = Integer.parseInt(loopCountStr);
-            if (loopCount <= 0) {
-                hasError = true;
-                errorMessage.append("Loop Count must be a positive integer.<br>");
-            }
-        } catch (NumberFormatException e) {
-            hasError = true;
-            errorMessage.append("Loop Count must be a valid integer.<br>");
-        }
+        // 使用 LotteryService 產生號碼
+        List<List<Integer>> results = lotteryService.generateLotteryNumbers(excludeNumbersStr, loopCountStr, excludeNumbers, errorMessage);
 
-        if (excludeNumbersStr != null && !excludeNumbersStr.trim().isEmpty()) {
-            String[] numbers = excludeNumbersStr.trim().split("\\s+");
-            for (String numStr : numbers) {
-                try {
-                    int num = Integer.parseInt(numStr);
-                    if (num < 1 || num > 49) {
-                        hasError = true;
-                        errorMessage.append("Excluded numbers must be between 1 and 49.<br>");
-                        break;
-                    }
-                    excludeNumbers.add(num);
-                } catch (NumberFormatException e) {
-                    hasError = true;
-                    errorMessage.append("Excluded numbers must be valid integers separated by spaces.<br>");
-                    break; 
-                }
-            }
-        }
-
-        if (hasError) {
+        if (results == null) {
             model.addAttribute("error", errorMessage.toString());
-            return "lottery"; 
+            return "lottery";
         }
 
-        List<String> results = new ArrayList<>();
+        session.setAttribute("lotteryResults", results);
 
-        for (int i = 0; i < loopCount; i++) {
-            Set<Integer> lotteryNumbers = generateLotteryNumbers(excludeNumbers);
-            results.add(formatLotteryNumbers(lotteryNumbers));
-        }
-
-        model.addAttribute("result", String.join("\n", results));
-
-        return "lotteryResult"; 
+        return "redirect:/lotteryResult?page=1";
     }
 
-    private Set<Integer> generateLotteryNumbers(List<Integer> excludeNumbers) {
-        Set<Integer> lotteryNumbers = new TreeSet<>();
-        Random random = new Random();
+    @GetMapping("/lotteryResult")
+    public String showLotteryResult(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            HttpSession session,
+            Model model) {
 
-        while (lotteryNumbers.size() < 6) {
-            int number = random.nextInt(49) + 1;
-            if (!excludeNumbers.contains(number)) {
-                lotteryNumbers.add(number);
-            }
+        List<List<Integer>> results = (List<List<Integer>>) session.getAttribute("lotteryResults");
+        if (results == null) {
+            model.addAttribute("error", "No lottery results found. Please generate numbers first.");
+            return "lottery";
         }
 
-        return lotteryNumbers;
-    }
+        // 每頁顯示的組數
+        int pageSize = 8;
+        int totalResults = results.size();
+        int totalPages = (int) Math.ceil((double) totalResults / pageSize);
 
-    private String formatLotteryNumbers(Set<Integer> numbers) {
-        StringBuilder sb = new StringBuilder();
-        for (int num : numbers) {
-            sb.append(String.format("%02d ", num));
+        // 頁碼校驗
+        if (page < 1) {
+            page = 1;
+        } else if (page > totalPages) {
+            page = totalPages;
         }
-        return sb.toString().trim();
+
+        // 計算頁碼開始和結束index
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, totalResults);
+
+        // 獲取當前頁的結果
+        List<List<Integer>> currentPageResults = results.subList(startIndex, endIndex);
+
+        model.addAttribute("currentPageResults", currentPageResults);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
+        return "lotteryResult";
     }
-}
+} 

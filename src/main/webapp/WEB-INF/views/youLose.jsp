@@ -17,17 +17,18 @@
                 <span class="navbar-text">
                     Welcome, ${sessionScope.loggedInUser.username}!
                 </span>
-                <form class="form-inline d-inline" action="logout" method="get">
-                    <button class="btn btn-outline-danger ml-2" type="submit">Logout</button>
-                </form>
             </div>
         </div>
     </nav>
 
     <div class="container mt-5 text-center">
         <h1 class="display-4 text-danger">Sorry, you have no more guesses left!</h1>
+        <p class="lead mt-4">The correct answer was: <span class="font-weight-bold text-primary">${sessionScope.correctAnswer}</span></p>
         <p class="lead mt-4">Better luck next time!</p>
         <a href="guess" class="btn btn-primary btn-lg mt-3">Play Again</a>
+    </div>
+    <div class="text-center mt-3">
+        <a href="${pageContext.request.contextPath}/guesshistory" class="btn btn-info my-2 my-sm-0">View History</a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

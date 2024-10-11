@@ -1,19 +1,20 @@
 package com.systex.playground.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    private int id;  
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     private String username;
     private String password;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GameRecord> gameRecords;
 
     public Member() {
     }
@@ -22,6 +23,8 @@ public class Member {
         this.username = username;
         this.password = password;
     }
+
+    // Getters and setters
 
     public int getId() {
         return id;
@@ -45,5 +48,13 @@ public class Member {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<GameRecord> getGameRecords() {
+        return gameRecords;
+    }
+
+    public void setGameRecords(List<GameRecord> gameRecords) {
+        this.gameRecords = gameRecords;
     }
 }
